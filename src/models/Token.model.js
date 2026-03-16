@@ -1,5 +1,7 @@
 'use strict';
 
+const { randomBytes } = require('crypto');
+
 /**
  * In-memory token store.
  *
@@ -34,8 +36,7 @@ const Token = {
    * @param {string} userId
    * @param {string} type      - one of TOKEN_TYPES values
    * @param {number} ttlHours  - how long until the token expires
-   * @param {any}   [data]     - optional extra payload stored
-   * alongside the token
+   * @param {any}   [data]   - optional extra payload stored alongside the token
    * @returns {string} the generated token (64-char hex string)
    */
   create(userId, type, ttlHours, data = null) {
@@ -46,7 +47,7 @@ const Token = {
       }
     }
 
-    const token = crypto.randomBytes(32).toString('hex');
+    const token = randomBytes(32).toString('hex');
     const expiresAt = Date.now() + ttlHours * 60 * 60 * 1000;
 
     store.set(token, {
@@ -63,8 +64,8 @@ const Token = {
 
   /**
    * Look up a token without removing it.
-   * Returns `null` if the token doesn't exist,
-   *  is the wrong type, or has expired.
+   * Returns `null` if the token doesn't exist, is
+   * the wrong type, or has expired.
    *
    * @param {string} token
    * @param {string} type
